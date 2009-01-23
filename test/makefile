@@ -26,8 +26,7 @@
 .SUFFIXES: .c .o
 CC = cc
 CFLAGS = -g -I..
-A = ../gdtoa.a
-L = -lm
+L = -lm -L../.libs -lgdtoa
 INFFIX = | sed 's/[Ii][Nn][Ff][intyINTY]*/Infinity/g'
 
 .c.o:
@@ -35,37 +34,37 @@ INFFIX = | sed 's/[Ii][Nn][Ff][intyINTY]*/Infinity/g'
 
 all: dt dItest ddtest dtest ftest Qtest xLtest xtest ddtestsi dItestsi tests
 
-dt = dt.o $A
+dt = dt.o
 dt: $(dt)
 	$(CC) -o dt $(dt) $L
 
-dItest = dItest.o getround.o $A
+dItest = dItest.o getround.o
 dItest: $(dItest)
-	$(CC) -o dItest $(dItest)
+	$(CC) -o dItest $(dItest) $L
 
-ddtest = ddtest.o getround.o $A
+ddtest = ddtest.o getround.o
 ddtest: $(ddtest)
 	$(CC) -o ddtest $(ddtest) $L
 
-dtest = dtest.o getround.o $A
+dtest = dtest.o getround.o
 dtest: $(dtest)
 	$(CC) -o dtest $(dtest) $L
 
-ftest = ftest.o getround.o $A
+ftest = ftest.o getround.o
 ftest: $(ftest)
-	$(CC) -o ftest $(ftest)
+	$(CC) -o ftest $(ftest) $L
 
-Qtest = Qtest.o getround.o $A
+Qtest = Qtest.o getround.o
 Qtest: $(Qtest)
-	$(CC) -o Qtest $(Qtest)
+	$(CC) -o Qtest $(Qtest) $L
 
-xtest = xtest.o getround.o $A
+xtest = xtest.o getround.o
 xtest: $(xtest)
-	$(CC) -o xtest $(xtest)
+	$(CC) -o xtest $(xtest) $L
 
-xLtest = xLtest.o getround.o $A
+xLtest = xLtest.o getround.o
 xLtest: $(xLtest)
-	$(CC) -o xLtest $(xLtest)
+	$(CC) -o xLtest $(xLtest) $L
 
 strtopddSI.o: strtopddSI.c ../strtopdd.c
 
@@ -77,15 +76,15 @@ strtoIddSI.o: strtoIddSI.c ../strtoIdd.c
 
 strtoIdSI.o: strtoIdSI.c ../strtoId.c
 
-ddtestsi = ddtest.o strtopddSI.o strtorddSI.o strtoIddSI.o getround.o $A
+ddtestsi = ddtest.o strtopddSI.o strtorddSI.o strtoIddSI.o getround.o
 ddtestsi: $(ddtestsi)
 	$(CC) -o ddtestsi $(ddtestsi) $L
 
-dItestsi = dItest.o strtodISI.o strtoIdSI.o getround.o $A
+dItestsi = dItest.o strtodISI.o strtoIdSI.o getround.o
 dItestsi: $(dItestsi)
-	$(CC) -o dItestsi $(dItestsi)
+	$(CC) -o dItestsi $(dItestsi) $L
 
-strtodt = strtodt.o $A
+strtodt = strtodt.o
 strtodt: $(strtodt)
 	$(CC) -o strtodt $(strtodt) $L
 
@@ -96,9 +95,9 @@ strtodt: $(strtodt)
 ## (which does all computations in integer arithmetic) and should show no
 ## unexpected results.
 
-strtodtnrp = strtodt.o ../strtodnrp.c $A
+strtodtnrp = strtodt.o ../strtodnrp.c
 strtodtnrp: $(strtodtnrp)
-	$(CC) -o strtodtnrp $(strtodtnrp)
+	$(CC) -o strtodtnrp $(strtodtnrp) $L
 
 # xQtest generates cp commands that depend on sizeof(long double).
 # See the source for details.  If you know better, create Q.out,
@@ -116,7 +115,7 @@ Q.out x.out xL.out:
 ## The rmdir below will fail if any test results differ.
 
 tests: Q.out x.out xL.out dt dItest ddtest dtest ftest Qtest xLtest xtest ddtestsi dItestsi strtodt strtodtnrp
-	mkdir bad
+	mkdir -p bad
 	cat testnos testnos1 | ./dt $(INFFIX) >zap 2>&1
 	cmp dtst.out zap || mv zap bad/dtst.out
 	./dItest <testnos $(INFFIX) >zap 2>&1
@@ -132,7 +131,7 @@ tests: Q.out x.out xL.out dt dItest ddtest dtest ftest Qtest xLtest xtest ddtest
 		cat bad/strtodt.out
 	./strtodtnrp testnos3 >bad/strtodtnrp.out && rm bad/strtodtnrp.out || \
 		cat bad/strtodtnrp.out
-	rmdir bad
+	rm -fr bad
 	touch tests
 
 xs0 = README Qtest.c dItest.c ddtest.c dtest.c dt.c ftest.c getround.c \
