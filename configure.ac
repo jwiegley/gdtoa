@@ -1,9 +1,13 @@
 # -*- Autoconf -*-
 # Process this file with autoconf to produce a configure script.
 
-AC_PREREQ(2.62)
+AC_PREREQ(2.61)
+
 AC_INIT([gdtoa],[1.0],[David M. Gay])
-AM_INIT_AUTOMAKE(gdtoa, 1.0)
+
+AC_CONFIG_AUX_DIR([.])
+AM_INIT_AUTOMAKE([dist-bzip2 foreign])
+
 AC_CONFIG_SRCDIR([gdtoa.c])
 AC_CONFIG_HEADERS([acconf.h])
 
