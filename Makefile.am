@@ -21,10 +21,12 @@ arith.h: arithchk.c
 	    $(CC) -DNO_LONG_LONG $(CFLAGS) -o $(top_builddir)/arithchk $<
 	$(top_builddir)/arithchk > $(top_builddir)/$@
 	rm -f $(top_builddir)/arithchk
+	-rm -fr $(top_builddir)/arithchk.dSYM # for Mac OS X
 
 gd_qnan.h: qnan.c arith.h
 	$(CC) $(CFLAGS) -o $(top_builddir)/qnan -I$(top_builddir) $<
 	$(top_builddir)/qnan > $(top_builddir)/$@
 	rm -f $(top_builddir)/qnan
+	-rm -fr $(top_builddir)/qnan.dSYM # for Mac OS X
 
 pkginclude_HEADERS = gdtoa.h gdtoaimp.h
